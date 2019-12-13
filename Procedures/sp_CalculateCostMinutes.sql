@@ -1,5 +1,5 @@
 
-alter proc sp_CalculateCostMinutes
+create proc sp_CalculateCostMinutes
 as
 Begin
 
