@@ -1,5 +1,7 @@
+drop procedure if exists dbo.sp_CreatePayments
+go
 
-alter procedure [dbo].[sp_Payments]	
+create procedure sp_CreatePayments
 as 
 Begin
 

@@ -1,5 +1,7 @@
+drop procedure if exists dbo.sp_PurchaseSubscriptionNew
+go
 
-alter procedure [dbo].[sp_purchaseSubscriptionNew]	
+create procedure sp_PurchaseSubscriptionNew	
 
 -- pentru Subscribers
 @vcFirstName varchar(50),
