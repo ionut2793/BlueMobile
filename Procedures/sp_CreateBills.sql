@@ -1,4 +1,7 @@
-alter procedure [dbo].[sp_BillingJob]	
+drop procedure if exists dbo.sp_CreateBills
+go
+
+create procedure sp_CreateBills	
 
 as 
 Begin

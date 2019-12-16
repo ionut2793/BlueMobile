@@ -1,12 +1,13 @@
-
-alter proc sp_CalculateCostMinutes
+drop procedure if exists dbo.sp_CalculateCostMinutes
+go
+create proc sp_CalculateCostMinutes
 as
 Begin
 
 Begin Try
 Begin Transaction
 
-
+-- drop temporary tables
 drop table  if exists tempdb.#minute
 drop table  if exists tempdb.#sms
 

@@ -1,4 +1,7 @@
-alter procedure [dbo].[sp_favoriteNumbers]
+drop procedure if exists dbo.sp_GetFavoriteNumbers
+go
+
+create procedure sp_GetFavoriteNumbers
 
 @Operation varchar(25),
 @vcPhoneNumber varchar(25),
