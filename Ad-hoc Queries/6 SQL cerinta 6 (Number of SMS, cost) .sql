@@ -1,4 +1,6 @@
-alter procedure [dbo].[sp_CalculateNumberOfSms]
+drop procedure if exists [dbo].[sp_CalculateNumberOfSms]
+go
+create procedure [dbo].[sp_CalculateNumberOfSms]
 
 @dtStartDate datetime,
 @dtEndDate datetime
@@ -6,8 +8,13 @@ alter procedure [dbo].[sp_CalculateNumberOfSms]
 as 
 Begin
 
-	Begin Try
-		Begin Transaction
+
+select 
+
+	A.*,
+	sum(CostSMS)  over ( partition by A.iSubscriberIDFK  order by NumarLuna)   as [CostSMS-YTD]
+
+from(
 
 Select 
    
@@ -17,7 +24,13 @@ Select
     E.vcCountry,
     E.vcState,
     count(iLogTypeIDFK) as NumarSMS,
-    F.NumarSMS as YTD
+    F.NumarSMS as YTD,
+	month(convert(date,dtSimCardLogDateTime)) as NumarLuna, 
+	datename(month,dtSimCardLogDateTime) as NumeLuna,
+	case 
+	when  count(iLogTypeIDFK) > 10 then (count(iLogTypeIDFK)-10)*0.03
+	else 0
+	end as CostSMS
 
  
    FROM [BlueMobile].[dbo].[SimCardLogs] as A
@@ -31,6 +44,8 @@ Select
 
 		iSubscriberIDFK,
 		count(iLogTypeIDFK) as  NumarSMS
+		--month(convert(date,dtSimCardLogDateTime)) as NumarLuna
+		--datediff(month,DATEFROMPARTS (year(@dtStartDate),1,1),@dtEndDate) as NumberMonth
 
 	FROM [BlueMobile].[dbo].[SimCardLogs]
 	
@@ -41,14 +56,8 @@ Select
 
  
   where A.iLogTypeIDFK in(1,2)  and convert(date,A.dtSimCardLogDateTime) between @dtStartDate and @dtEndDate
-  group by  A.iSubscriberIDFK, D.vcFirstName, D.vcLastName, E.vcCountry, E.vcState,  F.NumarSMS
-
+  group by  A.iSubscriberIDFK, D.vcFirstName, D.vcLastName, E.vcCountry, E.vcState,  F.NumarSMS,month(convert(date,dtSimCardLogDateTime)),datename(month,dtSimCardLogDateTime)
+  --order by  A.iSubscriberIDFK, month(convert(date,dtSimCardLogDateTime))
+ ) as A
   
-			Commit Transaction
-
-	End try
-	Begin catch
-		Rollback Transaction
-		print 'am intrat in rollback - probleme'
-	End catch
 End
