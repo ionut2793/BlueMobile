@@ -12,7 +12,8 @@ Begin
 select 
 
 	A.*,
-	sum(CostSMS)  over ( partition by A.iSubscriberIDFK  order by NumarLuna)   as [CostSMS-YTD]
+	sum(CostSMS)  over ( partition by A.iSubscriberIDFK  order by NumarLuna)   as [CostSMS-YTD],
+	sum(NumarSMS) over ( partition by A.iSubscriberIDFK  order by NumarLuna )   as [NumarSMS-YTD]
 
 from(
 
@@ -24,6 +25,7 @@ Select
     E.vcCountry,
     E.vcState,
     count(iLogTypeIDFK) as NumarSMS,
+	
     F.NumarSMS as YTD,
 	month(convert(date,dtSimCardLogDateTime)) as NumarLuna, 
 	datename(month,dtSimCardLogDateTime) as NumeLuna,
