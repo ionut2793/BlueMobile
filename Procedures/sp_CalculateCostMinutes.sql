@@ -140,7 +140,7 @@ select
   vcFavoriteNumber,
   VerificaNrFavorit,
   DataApel,
-  case when vcPhoneNumber like '212%' then 'in retea'
+  case when vcPhoneNumber like '[210-219]%' then 'in retea'
   else 'in afara retelei'
   end as TipulApelului,
   DATENAME(WEEKDAY,DataApel) as Ziua,
@@ -150,10 +150,10 @@ select
  end as CostFriends,
 
   case 
-	 when  DATENAME(WEEKDAY,DataApel) in ('Monday','Tuesday','Wednesday','Thursday','Friday') and vcPhoneNumber like '212%' and iProductIDFK=2    then Cost1
-	 when  DATENAME(WEEKDAY,DataApel) in ('Saturday','Sunday') and vcPhoneNumber like '212%'  and iProductIDFK=2   then Cost2
-	 when  DATENAME(WEEKDAY,DataApel) in ('Monday','Tuesday','Wednesday','Thursday','Friday') and vcPhoneNumber not like '212%' and iProductIDFK=2  then Cost3
-	 when  DATENAME(WEEKDAY,DataApel) in ('Saturday','Sunday') and vcPhoneNumber not like '212%'   and iProductIDFK=2  then Cost4   
+	 when  DATENAME(WEEKDAY,DataApel) in ('Monday','Tuesday','Wednesday','Thursday','Friday') and vcPhoneNumber like '[210-219]%' and iProductIDFK=2    then Cost1
+	 when  DATENAME(WEEKDAY,DataApel) in ('Saturday','Sunday') and vcPhoneNumber like '[210-219]%'  and iProductIDFK=2   then Cost2
+	 when  DATENAME(WEEKDAY,DataApel) in ('Monday','Tuesday','Wednesday','Thursday','Friday') and vcPhoneNumber not like '[210-219]%' and iProductIDFK=2  then Cost3
+	 when  DATENAME(WEEKDAY,DataApel) in ('Saturday','Sunday') and vcPhoneNumber not like '[210-219]%'   and iProductIDFK=2  then Cost4   
 	else -99
   end as CostFriendsExtra,
 
@@ -225,14 +225,14 @@ select
   vcFavoriteNumber,
   VerificaNrFavorit,
   DataApel,
-  case when vcPhoneNumber like '212%' then 'in retea'
+  case when vcPhoneNumber like '[210-219]%' then 'in retea'
   else 'in afara retelei'
   end as TipulApelului,
   DATENAME(WEEKDAY,DataApel) as Ziua,
-  case when  DATENAME(WEEKDAY,DataApel) in ('Monday','Tuesday','Wednesday','Thursday','Friday') and vcPhoneNumber like '212%'    then Cost1
-	   when  DATENAME(WEEKDAY,DataApel) in ('Saturday','Sunday') and vcPhoneNumber like '212%'    then Cost2
-	   when  DATENAME(WEEKDAY,DataApel) in ('Monday','Tuesday','Wednesday','Thursday','Friday') and vcPhoneNumber not like '212%' then Cost3
-	   when  DATENAME(WEEKDAY,DataApel) in ('Saturday','Sunday') and vcPhoneNumber not like '212%'    then Cost4
+  case when  DATENAME(WEEKDAY,DataApel) in ('Monday','Tuesday','Wednesday','Thursday','Friday') and vcPhoneNumber like '[210-219]%'    then Cost1
+	   when  DATENAME(WEEKDAY,DataApel) in ('Saturday','Sunday') and vcPhoneNumber like '[210-219]%'    then Cost2
+	   when  DATENAME(WEEKDAY,DataApel) in ('Monday','Tuesday','Wednesday','Thursday','Friday') and vcPhoneNumber not like '[210-219]%' then Cost3
+	   when  DATENAME(WEEKDAY,DataApel) in ('Saturday','Sunday') and vcPhoneNumber not like '[210-219]%'    then Cost4
 	   else -99
   end as Cost,
   iMinute,
