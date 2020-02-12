@@ -18,6 +18,7 @@ Begin
 	
 	where iLogTypeIDFK in(1,2) and convert(date,dtSimCardLogDateTime) between DATEFROMPARTS (year(@dtStartDate),1,1) and @dtEndDate
 	group by iSubscriberIDFK
+	CREATE NONCLUSTERED INDEX IX_#tab1_iSubscriberIDFK ON #tab1 (iSubscriberIDFK);
 
 	   
 select 
