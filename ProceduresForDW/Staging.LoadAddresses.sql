@@ -1,9 +1,9 @@
 USE [BlueMobileDW]
 GO
-
+ 
 DROP PROCEDURE IF exists Staging.LoadAddresses
 GO
-
+ 
 CREATE PROCEDURE Staging.LoadAddresses
 
 AS 
