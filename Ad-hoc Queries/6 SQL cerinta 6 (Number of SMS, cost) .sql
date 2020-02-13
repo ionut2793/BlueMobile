@@ -8,12 +8,24 @@ create procedure [dbo].[sp_CalculateNumberOfSms]
 as 
 Begin
 
+	select
 
+		iSubscriberIDFK,
+		count(iLogTypeIDFK) as  NumarSMS
+	
+    into #tab1
+	FROM [BlueMobile].[dbo].[SimCardLogs]
+	
+	where iLogTypeIDFK in(1,2) and convert(date,dtSimCardLogDateTime) between DATEFROMPARTS (year(@dtStartDate),1,1) and @dtEndDate
+	group by iSubscriberIDFK
+	CREATE NONCLUSTERED INDEX IX_#tab1_iSubscriberIDFK ON #tab1 (iSubscriberIDFK);
+
+	   
 select 
 
 	A.*,
 	sum(CostSMS)  over ( partition by A.iSubscriberIDFK  order by NumarLuna)   as [CostSMS-YTD],
-	sum(NumarSMS) over ( partition by A.iSubscriberIDFK  order by NumarLuna )   as [NumarSMS-YTD]
+	sum(NumarSMS) over ( partition by A.iSubscriberIDFK  order by NumarLuna )  as [NumarSMS-YTD]
 
 from(
 
@@ -40,24 +52,10 @@ Select
 	on A.iSubscriberIDFK=D.iSubscriberID
 	inner join [BlueMobile].[dbo].[Addresses] as E
 	on A.iSubscriberIDFK=E.iSubscriberIDFK
-	left join 
-	(
-	select 
-
-		iSubscriberIDFK,
-		count(iLogTypeIDFK) as  NumarSMS
-		--month(convert(date,dtSimCardLogDateTime)) as NumarLuna
-		--datediff(month,DATEFROMPARTS (year(@dtStartDate),1,1),@dtEndDate) as NumberMonth
-
-	FROM [BlueMobile].[dbo].[SimCardLogs]
-	
-	where iLogTypeIDFK in(1,2) and convert(date,dtSimCardLogDateTime) between DATEFROMPARTS (year(@dtStartDate),1,1) and @dtEndDate
-	group by iSubscriberIDFK
-	) as F
+	left join #tab1 as F
 	on A.iSubscriberIDFK=F.iSubscriberIDFK
 
- 
-  where A.iLogTypeIDFK in(1,2)  and convert(date,A.dtSimCardLogDateTime) between @dtStartDate and @dtEndDate
+  where A.iLogTypeIDFK in(1,2)  and convert(date,A.dtSimCardLogDateTime) between @dtStartDate and @dtEndDate  and E.iTypeAddressIDFK=2
   group by  A.iSubscriberIDFK, D.vcFirstName, D.vcLastName, E.vcCountry, E.vcState,  F.NumarSMS,month(convert(date,dtSimCardLogDateTime)),datename(month,dtSimCardLogDateTime)
   --order by  A.iSubscriberIDFK, month(convert(date,dtSimCardLogDateTime))
  ) as A
