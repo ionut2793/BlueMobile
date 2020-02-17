@@ -28,7 +28,7 @@ BEGIN
 
 
 	MERGE [BlueMobileDW].[Common].[LocationDimension] AS t
-	USING (	select top 100 percent *from #tmp1 order by iAddressID ) as tab1 ON
+	USING (	SELECT TOP 100 PERCENT * FROM  #tmp1 ORDER BY iAddressID ) AS tab1 ON
 	t.iLocationID= tab1.iAddressID
 
 	WHEN not matched THEN
