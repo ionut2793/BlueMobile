@@ -59,7 +59,6 @@ BEGIN
 
 	WHEN matched AND t.[bIsActive]=1 AND
 	(
-		 t.[iProductID]              <> tab1.[iProductID]              OR
 		 t.[vcProductTypeName]	     <> tab1.[vcProductTypeName]	   OR		
 		 t.[mCostMonth]		         <> tab1.[mCostMonth]	           OR
 	     t.[iSms]				     <> tab1.[iSms]			           OR	 	

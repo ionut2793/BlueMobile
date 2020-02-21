@@ -45,7 +45,6 @@ BEGIN
 
 	WHEN matched AND
 	(
-	 t.[iLocationID]	   <> tab1.[iAddressID] OR 
 	 t.[vcStreet]		   <> tab1.[vcStreet]   OR 
 	 t.[vcCity]            <> tab1.[vcCity]     OR
 	 t.[vcState]           <> tab1.[vcState]    OR 
@@ -54,7 +53,6 @@ BEGIN
 	 )
 
 	THEN UPDATE SET
-	 t.[iLocationID]	   = tab1.[iAddressID],
 	 t.[vcStreet]		   = tab1.[vcStreet], 
 	 t.[vcCity]            = tab1.[vcCity],
 	 t.[vcState]           = tab1.[vcState],
