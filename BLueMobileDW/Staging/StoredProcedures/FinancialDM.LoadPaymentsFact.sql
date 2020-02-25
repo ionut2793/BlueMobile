@@ -9,53 +9,9 @@ CREATE PROCEDURE FinancialDM.LoadPaymentsFact
 AS 
 BEGIN
 
-    DECLARE @sdtDateCreated datetime=getdate()
-
-IF not exists(SELECT iPaymentFactKey FROM [BlueMobileDW].[FinancialDM].[PaymentsFact]  WHERE iPaymentFactKey=1)  
-BEGIN
-	INSERT INTO [BlueMobileDW].[FinancialDM].[PaymentsFact]
-	(
-		[iPaymentID],
-		[iPaymentMethodDimensionKey],
-		[iCurrencyDimensionKey],
-		[mPaymentAmount],
-		[iProductDimensionKey],
-		[iSubscriberDimensionKey],
-		[iLocationDimensionKey],
-		[iPaymentDateKey],
-		[sdtDateCreated]
-
-	)
-	SELECT
-
-		A.[iPaymentID],
-		B.[iPaymentMethodDimensionKey],
-		C.[iCurrencyDimensionKey],
-		A.[mPaymentAmount],
-		E.[iProductDimensionKey],
-		F.[iSubscriberDimensionKey],
-		H.[iLocationDimensionKey],
-		I.iDateID,
-	    @sdtDateCreated
-
-    
-	
-	FROM	    [BlueMobileDW].[Staging].[Payments]					  AS A 
-    INNER JOIN  [BlueMobileDW].[FinancialDM].[PaymentMethodDimension] AS B  ON A.iPaymentMethodIDFK = B.iPaymentMethodID AND A.iStatusPaymentIDFK  = 1
-	INNER JOIN  [BlueMobileDW].[FinancialDM].[CurrencyDimension]	  AS C  ON A.iCurrencyIDFK      = C.iCurrencyID
-	INNER JOIN  [BlueMobileDW].[Staging].Documents					  AS D	ON A.iDocumentIDFK      = D.iDocumentID	     AND D.iDocumentStatusIDFK = 1 AND D.iDocumentTypeIDFK	= 1	
-	INNER JOIN  [BlueMobileDW].[FinancialDM].[ProductDimension]       AS E  ON D.iProductIDFK       = E.iProductID       AND E.bIsActive=1
-	INNER JOIN  [BlueMobileDW].[Common].[SubscriberDimension]         AS F  ON A.iSubscriberIDFK    = F.iSubscriberID    AND F.bIsActive=1
-	INNER JOIN  [BlueMobileDW].[Staging].[Addresses]				  AS G  ON A.iSubscriberIDFK    = G.iSubscriberIDFK  AND G.iTypeAddressIDFK=1
-	INNER JOIN  [BlueMobileDW].[Common].[LocationDimension]			  AS H  ON G.iAddressID		    = H.iLocationID
-	INNER JOIN  [BlueMobileDW].[Common].[DateDimension]				  AS I  ON cast(A.dtPaymentDate as date)	    = I.dDate
-
-END
-
-ELSE
-IF  exists(SELECT iPaymentFactKey FROM [BlueMobileDW].[FinancialDM].[PaymentsFact]  WHERE iPaymentFactKey=1)  
-BEGIN
-
+    DECLARE @sdtDateCreated datetime = getdate()
+	DECLARE @dtstartDate    datetime = isnull((SELECT  MAX(sdtDateCreated)  FROM [BlueMobileDW].[FinancialDM].[PaymentsFact]),'1900-01-01')
+	DECLARE @dtEndDate      datetime = dateadd(ss,59,dateadd(mi,59,dateadd(hh,23,dateadd(ms,-1,dateadd(dd,-1,cast(datepart(mm,getdate()) as varchar) + '-' + cast(datepart(dd,getdate()) as varchar) + '-' + cast(datepart(yyyy,getdate()) as varchar))))))
 
 	INSERT INTO [BlueMobileDW].[FinancialDM].[PaymentsFact]
 	(
@@ -68,34 +24,34 @@ BEGIN
 		[iLocationDimensionKey],
 		[iPaymentDateKey],
 		[sdtDateCreated]
-
 	)
+
 	SELECT
 
-		A.[iPaymentID],
-		B.[iPaymentMethodDimensionKey],
-		C.[iCurrencyDimensionKey],
-		A.[mPaymentAmount],
-		E.[iProductDimensionKey],
-		F.[iSubscriberDimensionKey],
-		H.[iLocationDimensionKey],
-		I.iDateID,
-	    @sdtDateCreated
+		Payments.[iPaymentID],
+		PaymentMethodDimension.[iPaymentMethodDimensionKey],
+		CurrencyDimension.[iCurrencyDimensionKey],
+		Payments.[mPaymentAmount],
+		ProductDimension.[iProductDimensionKey],
+		SubscriberDimension.[iSubscriberDimensionKey],
+		LocationDimension.[iLocationDimensionKey],
+		DateDimension.[iDateID],
+	    @sdtDateCreated 
+		
 
-    
+	FROM	    [BlueMobileDW].[Staging].[Payments]					  
+    INNER JOIN  [BlueMobileDW].[FinancialDM].[PaymentMethodDimension]   ON Payments.iPaymentMethodIDFK = PaymentMethodDimension.iPaymentMethodID AND Payments.iStatusPaymentIDFK = 1
+	INNER JOIN  [BlueMobileDW].[FinancialDM].[CurrencyDimension]	    ON Payments.iCurrencyIDFK      = CurrencyDimension.iCurrencyID
+	INNER JOIN  [BlueMobileDW].[Staging].[Documents]					ON Payments.iDocumentIDFK      = Documents.iDocumentID AND Documents.iDocumentStatusIDFK = 1 AND Documents.iDocumentTypeIDFK = 1	
+	INNER JOIN  [BlueMobileDW].[FinancialDM].[ProductDimension]         ON Documents.iProductIDFK      = ProductDimension.iProductID AND ProductDimension.bIsActive = 1
+	INNER JOIN  [BlueMobileDW].[Common].[SubscriberDimension]           ON Payments.iSubscriberIDFK    = SubscriberDimension.iSubscriberID AND SubscriberDimension.bIsActive = 1
+	INNER JOIN  [BlueMobileDW].[Staging].[Addresses]				    ON Payments.iSubscriberIDFK    = Addresses.iSubscriberIDFK AND Addresses.iTypeAddressIDFK = 1
+	INNER JOIN  [BlueMobileDW].[Common].[LocationDimension]			    ON Addresses.iAddressID		   = LocationDimension.iLocationID
+	INNER JOIN  [BlueMobileDW].[Common].[DateDimension]				    ON Payments.dPaymentDate       = DateDimension.dDate
+
+	WHERE (Payments.sdtDateCreated > @dtstartDate and Payments.sdtDateCreated < @dtEndDate) order by iPaymentID 
 	
-	FROM	    [BlueMobileDW].[Staging].[Payments]					  AS A 
-    INNER JOIN  [BlueMobileDW].[FinancialDM].[PaymentMethodDimension] AS B  ON A.iPaymentMethodIDFK           = B.iPaymentMethodID AND A.iStatusPaymentIDFK  = 1
-	INNER JOIN  [BlueMobileDW].[FinancialDM].[CurrencyDimension]	  AS C  ON A.iCurrencyIDFK                = C.iCurrencyID
-	INNER JOIN  [BlueMobileDW].[Staging].Documents					  AS D	ON A.iDocumentIDFK                = D.iDocumentID	   AND D.iDocumentStatusIDFK = 1 AND D.iDocumentTypeIDFK	= 1	
-	INNER JOIN  [BlueMobileDW].[FinancialDM].[ProductDimension]       AS E  ON D.iProductIDFK                 = E.iProductID       AND E.bIsActive=1
-	INNER JOIN  [BlueMobileDW].[Common].[SubscriberDimension]         AS F  ON A.iSubscriberIDFK              = F.iSubscriberID    AND F.bIsActive=1
-	INNER JOIN  [BlueMobileDW].[Staging].[Addresses]				  AS G  ON A.iSubscriberIDFK              = G.iSubscriberIDFK  AND G.iTypeAddressIDFK=1
-	INNER JOIN  [BlueMobileDW].[Common].[LocationDimension]			  AS H  ON G.iAddressID					  = H.iLocationID
-	INNER JOIN  [BlueMobileDW].[Common].[DateDimension]				  AS I  ON cast(A.dtPaymentDate as date)  = I.dDate
-
-	WHERE   A.iPaymentID >  (SELECT max(iPaymentFactKey) FROM [BlueMobileDW].[FinancialDM].[PaymentsFact])
 
 END
 
-END
+
