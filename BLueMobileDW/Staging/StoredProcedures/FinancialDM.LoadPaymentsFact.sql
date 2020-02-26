@@ -58,7 +58,7 @@ BEGIN
 	INNER JOIN  [BlueMobileDW].[Common].[LocationDimension]			    ON Addresses.iAddressID		   = LocationDimension.iLocationID
 	INNER JOIN  [BlueMobileDW].[Common].[DateDimension]				    ON Payments.dPaymentDate       = DateDimension.dDate
 
-	WHERE (Payments.dPaymentDate > @dtstartDate and Payments.dPaymentDate < @dtEndDate) ORDER BY iPaymentID 
+	WHERE (Payments.dPaymentDate > @dtstartDate and Payments.dPaymentDate < @dtEndDate)
 	
 
 END
