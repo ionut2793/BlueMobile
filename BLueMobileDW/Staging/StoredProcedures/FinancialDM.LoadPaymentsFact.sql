@@ -59,7 +59,6 @@ BEGIN
 	INNER JOIN  [BlueMobileDW].[Common].[DateDimension]				    ON Payments.dPaymentDate       = DateDimension.dDate
 
 	WHERE (Payments.dPaymentDate > @dtstartDate and Payments.dPaymentDate < @dtEndDate)
-	
 
 END
 
