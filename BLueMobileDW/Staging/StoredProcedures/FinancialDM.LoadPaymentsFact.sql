@@ -10,7 +10,16 @@ AS
 BEGIN
 
     DECLARE @sdtDateCreated datetime = getdate()
-	DECLARE @dtstartDate    datetime = isnull((SELECT  MAX(sdtDateCreated)  FROM [BlueMobileDW].[FinancialDM].[PaymentsFact]),'1900-01-01')
+	DECLARE @dtstartDate    datetime = 
+	isnull
+	(
+		(
+		SELECT max([DateDimension].dDate) 
+		FROM [BlueMobileDW].[FinancialDM].[PaymentsFact]
+			INNER JOIN [Common].[DateDimension] ON [PaymentsFact].iPaymentDateKey=[DateDimension].iDateID
+		),'1900-01-01'
+	)
+	
 	DECLARE @dtEndDate      datetime = dateadd(ss,59,dateadd(mi,59,dateadd(hh,23,dateadd(ms,-1,dateadd(dd,-1,cast(datepart(mm,getdate()) as varchar) + '-' + cast(datepart(dd,getdate()) as varchar) + '-' + cast(datepart(yyyy,getdate()) as varchar))))))
 
 	INSERT INTO [BlueMobileDW].[FinancialDM].[PaymentsFact]
@@ -49,7 +58,7 @@ BEGIN
 	INNER JOIN  [BlueMobileDW].[Common].[LocationDimension]			    ON Addresses.iAddressID		   = LocationDimension.iLocationID
 	INNER JOIN  [BlueMobileDW].[Common].[DateDimension]				    ON Payments.dPaymentDate       = DateDimension.dDate
 
-	WHERE (Payments.sdtDateCreated > @dtstartDate and Payments.sdtDateCreated < @dtEndDate) order by iPaymentID 
+	WHERE (Payments.dPaymentDate > @dtstartDate and Payments.dPaymentDate < @dtEndDate) ORDER BY iPaymentID 
 	
 
 END

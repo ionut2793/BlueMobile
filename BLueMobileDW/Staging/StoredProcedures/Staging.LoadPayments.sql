@@ -11,7 +11,7 @@ BEGIN
 	TRUNCATE TABLE [BlueMobileDW].[Staging].[Payments]
     DECLARE @sdtDateCreated datetime=getdate()
 
-	INSERT INTO [BlueMobileDW].[Staging].[Payments] ([iPaymentID],[iSubscriberIDFK],[mPaymentAmount],[mPenaltyCost],[mTotalCost],[dPaymentDate],[dtPaymentDate],[iPaymentMethodIDFK],[iStatusPaymentIDFK],[iDocumentIDFK],[iRewardPointsRulesIDFK],[iCurrencyIDFK],[sdtDateCreatedPayment],[sdtDateCreated])
+	INSERT INTO [BlueMobileDW].[Staging].[Payments] ([iPaymentID],[iSubscriberIDFK],[mPaymentAmount],[mPenaltyCost],[mTotalCost],[dPaymentDate],[dtPaymentDate],[iPaymentMethodIDFK],[iStatusPaymentIDFK],[iDocumentIDFK],[iRewardPointsRulesIDFK],[iCurrencyIDFK],[sdtDateCreated])
 	SELECT
 
 		 [iPaymentID]
@@ -26,7 +26,6 @@ BEGIN
 		,[iDocumentIDFK]
 		,[iRewardPointsRulesIDFK]
 		,[iCurrencyIDFK]
-		,[sdtDateCreated]
 		,@sdtDateCreated
       
 	FROM [BlueMobile].[dbo].[Payments]
