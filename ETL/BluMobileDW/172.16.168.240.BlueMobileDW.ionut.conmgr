@@ -1,0 +1,14 @@
+﻿<?xml version="1.0"?>
+<DTS:ConnectionManager xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:ObjectName="172.16.168.240.BlueMobileDW.ionut"
+  DTS:DTSID="{692F1D3F-856A-4E1E-B4B4-D10A833AF5A0}"
+  DTS:CreationName="OLEDB">
+  <DTS:ObjectData>
+    <DTS:ConnectionManager
+      DTS:ConnectionString="Data Source=172.16.168.240;User ID=ionut;Initial Catalog=BlueMobileDW;Provider=SQLNCLI11.1;Persist Security Info=True;Auto Translate=False;">
+      <DTS:Password
+        DTS:Name="Password"
+        Sensitive="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAA05NZMy1DKkirAAv+7iiO/wAAAAACAAAAAAAQZgAAAAEAACAAAADPzxLO16tStoIlI4qGpNZsbPgUqOunqbC5CAXcYsElBQAAAAAOgAAAAAIAACAAAADxIv4JSR1s2eAwdCn/aXB4FknXAjk4CqHFE8aaTbz5l4AAAACr93Ij8U61K6XzTURIMV+RyjSsxxjYSpW+kBuMqilitFJa2ziA3xbwkBgQ9hjSpTLhEqY5+Alw5M5AmNVnOgmXdmbGMAdGpXFDzHT00VDbRUBOb1Eg2/6y+DMq38/JAwb8B9PacGpNn1mSnod5YC0zTz0S/pEN4gzNulwMueeb30AAAABGrvDxP5QS09p0kbFI0Qu971nytb6SYRIBGbbeErRB0hR8XFi1r+XvGoRoNV19dOrUlvlZSGVSEt312Dd8+6K5</DTS:Password>
+    </DTS:ConnectionManager>
+  </DTS:ObjectData>
+</DTS:ConnectionManager>
